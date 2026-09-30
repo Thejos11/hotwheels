@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>🔥🏎️ Feliz Día de los Carritos de Hot Wheels</title>
+<meta name="description" content="Feliz Día de los Carritos de Hot Wheels - Edición Especial de Amor">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;900&family=Racing+Sans+One&display=swap" rel="stylesheet">
+<style>
+/* ─── RESET & BASE ─── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{width:100%;height:100%;overflow:hidden;font-family:'Outfit',sans-serif}
+
+/* ─── DARK STARRY BACKGROUND ─── */
+body{
+  background:#050a1a;
+  background-image:
+    radial-gradient(ellipse at 75% 20%,rgba(60,120,200,.12) 0%,transparent 50%),
+    radial-gradient(ellipse at 25% 80%,rgba(30,80,180,.1) 0%,transparent 50%);
+  color:#fff;
+  cursor:default;
+}
+
+/* ─── CANVAS (stars + moon) ─── */
+canvas#sky{position:fixed;inset:0;z-index:0}
+
+/* ─── HEADER ─── */
+header{
+  position:fixed;top:0;left:0;right:0;z-index:10;
+  text-align:center;
+  padding:clamp(18px,4vw,36px) 16px clamp(10px,2vw,18px);
+  background:linear-gradient(180deg,rgba(5,10,26,.95) 0%,rgba(5,10,26,.6) 70%,transparent 100%);
+  pointer-events:none;
+}
+header h1{
+  font-family:'Racing Sans One',cursive;
+  font-size:clamp(22px,5.5vw,46px);
+  font-style:italic;
+  color:#7ec8f0;
+  text-shadow:
+    0 0 20px rgba(100,180,240,.6),
+    0 0 40px rgba(100,180,240,.3),
+    0 2px 4px rgba(0,0,0,.8);
+  letter-spacing:1px;
+  line-height:1.2;
+}
+header .sub{
+  font-size:clamp(12px,2.2vw,16px);
+  color:rgba(200,220,255,.5);
+  margin-top:6px;
+  letter-spacing:1px;
+}
+
+/* ─── FLOATING CARS ─── */
+.hw-car{
+  position:fixed;
+  z-index:5;
+  cursor:pointer;
+  user-select:none;
+  will-change:transform,left,top;
+  transition:filter .2s;
+}
+.hw-car img{
+  width:clamp(150px,22vw,210px);
+  height:auto;
+  pointer-events:none;
+  filter:drop-shadow(0 6px 20px rgba(0,0,0,.7)) drop-shadow(0 0 12px rgba(100,160,255,.25));
+  transition:transform .25s cubic-bezier(.175,.885,.32,1.275);
+  /* Clip the white edges from the JPG background */
+  clip-path:inset(3% 4% 2% 4% round 8px);
+}
+.hw-car:hover img{
+  transform:scale(1.1) rotate(-2deg);
+  filter:drop-shadow(0 8px 28px rgba(0,0,0,.8)) drop-shadow(0 0 24px rgba(255,150,0,.45));
+}
+.hw-car:active img{
+  transform:scale(.95);
+}
+
+/* ─── MODAL ─── */
+#overlay{
+  position:fixed;inset:0;z-index:50;
+  display:none;align-items:center;justify-content:center;
+  background:rgba(5,10,26,.75);
+  backdrop-filter:blur(6px);
+  padding:20px;
+}
+#overlay.open{display:flex}
+
+.msg-card{
+  max-width:380px;width:100%;
+  padding:32px 28px;
+  border-radius:20px;
+  text-align:center;
+  position:relative;overflow:hidden;
+  /* Hot Wheels packaging back */
+  background:
+    linear-gradient(145deg,
+      #002060 0%,#003399 25%,#0050b5 50%,#003080 75%,#001a4d 100%);
+  border:3px solid #ff6b00;
+  box-shadow:
+    0 0 50px rgba(255,107,0,.35),
+    0 20px 60px rgba(0,0,0,.6),
+    inset 0 1px 0 rgba(255,255,255,.08);
+  animation:cardPop .4s cubic-bezier(.175,.885,.32,1.275);
+}
+@keyframes cardPop{
+  from{transform:scale(.5) rotateY(90deg);opacity:0}
+  to{transform:scale(1) rotateY(0);opacity:1}
+}
+/* Flame accents */
+.msg-card::before{
+  content:'';position:absolute;top:-50px;left:-30px;
+  width:180px;height:180px;
+  background:radial-gradient(ellipse,rgba(255,100,0,.2) 0%,transparent 70%);
+  pointer-events:none;
+}
+.msg-card::after{
+  content:'';position:absolute;bottom:-50px;right:-30px;
+  width:180px;height:180px;
+  background:radial-gradient(ellipse,rgba(255,180,0,.15) 0%,transparent 70%);
+  pointer-events:none;
+}
+.msg-card .hw-badge{
+  font-family:'Racing Sans One',cursive;
+  font-size:20px;
+  background:linear-gradient(135deg,#ff6b00,#ffcc00);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;
+  letter-spacing:2px;
+  position:relative;z-index:1;
+}
+.msg-card .car-title{
+  font-family:'Racing Sans One',cursive;
+  font-size:16px;
+  color:#7ec8f0;
+  margin:10px 0 6px;
+  position:relative;z-index:1;
+}
+.msg-card .love-icon{
+  font-size:38px;
+  margin:10px 0;
+  animation:heartbeat 1.4s ease-in-out infinite;
+  position:relative;z-index:1;
+}
+@keyframes heartbeat{
+  0%,100%{transform:scale(1)}
+  14%{transform:scale(1.18)}
+  28%{transform:scale(1)}
+  42%{transform:scale(1.12)}
+}
+.msg-card .love-msg{
+  font-size:clamp(15px,2.8vw,18px);
+  line-height:1.65;
+  color:#dce8ff;
+  position:relative;z-index:1;
+  text-shadow:0 2px 6px rgba(0,0,0,.4);
+}
+.msg-card .close-btn{
+  margin-top:22px;
+  background:linear-gradient(135deg,#ff6b00,#ff8c00);
+  color:#fff;border:0;
+  border-radius:999px;
+  padding:11px 30px;
+  font-family:'Outfit',sans-serif;
+  font-size:14px;font-weight:600;
+  cursor:pointer;
+  position:relative;z-index:1;
+  box-shadow:0 4px 18px rgba(255,107,0,.4);
+  transition:transform .2s,box-shadow .2s;
+}
+.msg-card .close-btn:hover{
+  transform:scale(1.06);
+  box-shadow:0 6px 28px rgba(255,107,0,.6);
+}
+
+/* ─── HINT ─── */
+.hint{
+  position:fixed;bottom:clamp(14px,3vw,24px);left:0;right:0;
+  text-align:center;z-index:10;
+  font-size:clamp(12px,2vw,15px);
+  color:rgba(200,220,255,.45);
+  pointer-events:none;
+  text-shadow:0 1px 4px rgba(0,0,0,.5);
+}
+</style>
+</head>
+<body>
+
+<canvas id="sky"></canvas>
+
+<header>
+  <h1>Feliz Día de los<br>Carritos de Hot Wheels</h1>
+  <div class="sub">Toca un carrito para descubrir tu mensaje 💌</div>
+</header>
+
+<p class="hint">🏎️ ¡Los carritos se mueven! Toca uno para abrir su carta 💌</p>
+
+<!-- Modal -->
+<div id="overlay">
+  <div class="msg-card">
+    <div class="hw-badge">🔥 HOT WHEELS 🔥</div>
+    <div class="car-title" id="modalTitle"></div>
+    <div class="love-icon">💌</div>
+    <p class="love-msg" id="modalMsg"></p>
+    <button class="close-btn" id="closeBtn">Cerrar 💙</button>
+  </div>
+</div>
+
+<script>
+// ─── CAR DATA (6 cars) ───
+const cars = [
+  {
+    name: 'Nissan Skyline GT-R (R34)',
+    img: 'assets/pack_skyline_r34.jpg',
+    msg: 'Mi amor, eres como un R34… único, irrepetible y el sueño de mi vida. Cada día a tu lado es mejor que el anterior. Te amo con todo mi corazón. 💙'
+  },
+  {
+    name: 'Toyota Supra MK4',
+    img: 'assets/pack_supra_mk4.jpg',
+    msg: 'Bebé, tú eres mi turbo, mi fuerza, mi todo. Contigo me siento la mujer más afortunada del mundo. Me aceleras el corazón cada vez que te veo. Te amo mi vida. 🔥'
+  },
+  {
+    name: 'Nissan 300ZX Z32',
+    img: 'assets/pack_300zx.jpg',
+    msg: 'Si pudiera elegir entre todos los universos, te elegiría a ti en cada uno de ellos. Eres el hombre más increíble que he conocido y me haces tan feliz. 🌌'
+  },
+  {
+    name: 'Mazda RX-7 FD',
+    img: 'assets/pack_rx7.jpg',
+    msg: 'Tu sonrisa me derrite, amor. Me encanta cómo me miras, cómo me cuidas y cómo me haces reír. Eres el hombre perfecto para mí y te amo más de lo que las palabras pueden decir. ⭐'
+  },
+  {
+    name: 'Toyota AE86 Trueno',
+    img: 'assets/pack_ae86.jpg',
+    msg: 'Mi corazón derrapa por ti cada día, mi amor. No importa las curvas que tenga la vida, contigo quiero recorrer cada camino. Eres mi copiloto para siempre. 💫'
+  },
+  {
+    name: 'Ford Mustang \'67',
+    img: 'assets/pack_mustang.jpg',
+    msg: 'Eres mi clásico favorito, mi amor. Fuerte, hermoso y con un corazón que ruge solo para mí. Gracias por amarme tanto, te amo hoy y siempre mi rey. 💚'
+  }
+];
+
+// ─── FLOATING PHYSICS ───
+const W = () => window.innerWidth;
+const H = () => window.innerHeight;
+const carSize = () => Math.min(Math.max(window.innerWidth * 0.22, 150), 210);
+
+class FloatingCar {
+  constructor(data, index) {
+    this.data = data;
+    this.index = index;
+    // Random starting position
+    const cs = carSize();
+    this.x = Math.random() * (W() - cs);
+    this.y = Math.random() * (H() - cs - 160) + 120; // avoid header
+    // Random velocity
+    const speed = 0.4 + Math.random() * 0.6;
+    const angle = Math.random() * Math.PI * 2;
+    this.vx = Math.cos(angle) * speed;
+    this.vy = Math.sin(angle) * speed;
+    // Slight rotation wobble
+    this.rotation = (Math.random() - 0.5) * 8;
+    this.rotSpeed = (Math.random() - 0.5) * 0.15;
+    this.bobPhase = Math.random() * Math.PI * 2;
+    this.bobAmp = 3 + Math.random() * 5;
+    // Create DOM element
+    this.el = document.createElement('div');
+    this.el.className = 'hw-car';
+    this.el.innerHTML = `<img src="${data.img}" alt="${data.name}" draggable="false">`;
+    this.el.addEventListener('click', () => this.showMessage());
+    document.body.appendChild(this.el);
+  }
+
+  showMessage() {
+    document.getElementById('modalTitle').textContent = this.data.name;
+    document.getElementById('modalMsg').textContent = this.data.msg;
+    document.getElementById('overlay').classList.add('open');
+  }
+
+  update(t) {
+    const cs = carSize();
+    const w = W();
+    const h = H();
+
+    // Move
+    this.x += this.vx;
+    this.y += this.vy;
+
+    // Bounce off walls
+    if (this.x <= 0) { this.x = 0; this.vx = Math.abs(this.vx); }
+    if (this.x >= w - cs) { this.x = w - cs; this.vx = -Math.abs(this.vx); }
+    if (this.y <= 100) { this.y = 100; this.vy = Math.abs(this.vy); }
+    if (this.y >= h - cs - 40) { this.y = h - cs - 40; this.vy = -Math.abs(this.vy); }
+
+    // Gentle wobble rotation
+    this.rotation += this.rotSpeed;
+    if (this.rotation > 10) this.rotSpeed = -Math.abs(this.rotSpeed);
+    if (this.rotation < -10) this.rotSpeed = Math.abs(this.rotSpeed);
+
+    // Bob up/down
+    const bob = Math.sin(t / 1000 + this.bobPhase) * this.bobAmp;
+
+    // Apply transform
+    this.el.style.left = this.x + 'px';
+    this.el.style.top = (this.y + bob) + 'px';
+    this.el.style.transform = `rotate(${this.rotation}deg)`;
+  }
+}
+
+// Create all cars
+const floatingCars = cars.map((c, i) => new FloatingCar(c, i));
+
+// Animation loop
+let lastT = 0;
+function animate(t) {
+  floatingCars.forEach(car => car.update(t));
+  requestAnimationFrame(animate);
+}
+requestAnimationFrame(animate);
+
+// ─── MODAL CLOSE ───
+document.getElementById('closeBtn').addEventListener('click', () => {
+  document.getElementById('overlay').classList.remove('open');
+});
+document.getElementById('overlay').addEventListener('click', (e) => {
+  if (e.target.id === 'overlay') {
+    document.getElementById('overlay').classList.remove('open');
+  }
+});
+
+// ─── CANVAS: Starry sky + Moon ───
+const cv = document.getElementById('sky');
+const ctx = cv.getContext('2d');
+let cW, cH, stars = [];
+
+function resizeCanvas() {
+  cW = cv.width = window.innerWidth;
+  cH = cv.height = window.innerHeight;
+  stars = Array.from({ length: 200 }, () => ({
+    x: Math.random() * cW,
+    y: Math.random() * cH,
+    r: Math.random() * 1.6 + 0.2,
+    phase: Math.random() * Math.PI * 2,
+    speed: 0.5 + Math.random() * 1.5
+  }));
+}
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas();
+
+(function drawSky(t) {
+  ctx.clearRect(0, 0, cW, cH);
+
+  // Dark gradient sky
+  const skyGrad = ctx.createLinearGradient(0, 0, 0, cH);
+  skyGrad.addColorStop(0, '#050a1a');
+  skyGrad.addColorStop(0.5, '#0a1230');
+  skyGrad.addColorStop(1, '#060e22');
+  ctx.fillStyle = skyGrad;
+  ctx.fillRect(0, 0, cW, cH);
+
+  // Moon glow
+  const moonX = cW * 0.82;
+  const moonY = cH * 0.15;
+  const moonGlow = ctx.createRadialGradient(moonX, moonY, 10, moonX, moonY, 120);
+  moonGlow.addColorStop(0, 'rgba(200,220,255,.25)');
+  moonGlow.addColorStop(0.5, 'rgba(150,180,220,.08)');
+  moonGlow.addColorStop(1, 'transparent');
+  ctx.fillStyle = moonGlow;
+  ctx.fillRect(0, 0, cW, cH);
+
+  // Moon
+  ctx.beginPath();
+  ctx.arc(moonX, moonY, 28, 0, Math.PI * 2);
+  ctx.fillStyle = 'rgba(220,235,255,.9)';
+  ctx.fill();
+  ctx.beginPath();
+  ctx.arc(moonX, moonY, 28, 0, Math.PI * 2);
+  ctx.shadowColor = 'rgba(200,220,255,.6)';
+  ctx.shadowBlur = 40;
+  ctx.fill();
+  ctx.shadowBlur = 0;
+
+  // Stars
+  for (const s of stars) {
+    const twinkle = 0.3 + 0.7 * Math.abs(Math.sin(t / (800 * s.speed) + s.phase));
+    ctx.globalAlpha = twinkle;
+    ctx.fillStyle = '#c8dcff';
+    ctx.beginPath();
+    ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  // Occasional shooting star
+  const shootPhase = (t % 8000) / 8000;
+  if (shootPhase < 0.08) {
+    const progress = shootPhase / 0.08;
+    const sx = cW * 0.3 + progress * cW * 0.4;
+    const sy = cH * 0.05 + progress * cH * 0.2;
+    ctx.globalAlpha = 1 - progress;
+    ctx.strokeStyle = '#fff';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(sx, sy);
+    ctx.lineTo(sx - 40 * progress, sy - 15 * progress);
+    ctx.stroke();
+  }
+
+  ctx.globalAlpha = 1;
+  requestAnimationFrame(drawSky);
+})(0);
+</script>
+</body>
+</html>
